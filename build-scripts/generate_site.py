@@ -7,6 +7,8 @@ from module_content import MODULES as MC
 blocks = pickle.load(open('blocks.pkl', 'rb'))
 ranges = pickle.load(open('ranges.pkl', 'rb'))
 
+SITE_URL = 'https://allenvincentlucas.github.io/learn-destiny-lms/'
+
 CHECK_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="#2A4B8D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
 
 def esc(s):
@@ -15,7 +17,9 @@ def esc(s):
 # ---------------------------------------------------------------
 # Shared head / topbar / footer
 # ---------------------------------------------------------------
-def head(title, desc, prefix=''):
+def head(title, desc, prefix='', canonical_path='', og_image='assets/img/og/home.png'):
+    canonical_url = SITE_URL + canonical_path
+    og_image_url = SITE_URL + og_image
     return f'''<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,6 +27,30 @@ def head(title, desc, prefix=''):
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(desc)}">
+<link rel="canonical" href="{esc(canonical_url)}">
+
+<!-- Favicons -->
+<link rel="icon" href="{prefix}favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="{prefix}favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="{prefix}favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="{prefix}apple-touch-icon.png">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Destiny Training Curriculum">
+<meta property="og:title" content="{esc(title)}">
+<meta property="og:description" content="{esc(desc)}">
+<meta property="og:url" content="{esc(canonical_url)}">
+<meta property="og:image" content="{esc(og_image_url)}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{esc(title)}">
+<meta name="twitter:description" content="{esc(desc)}">
+<meta name="twitter:image" content="{esc(og_image_url)}">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -41,6 +69,50 @@ def topbar(prefix=''):
     </nav>
   </div>
 </div>
+'''
+
+# ---------------------------------------------------------------
+# Social sharing bar (Facebook, X, Instagram-copy-link)
+# ---------------------------------------------------------------
+import urllib.parse
+
+def share_bar_html(page_url, title):
+    enc_url = urllib.parse.quote(page_url, safe='')
+    enc_text = urllib.parse.quote(title, safe='')
+    fb_url = f'https://www.facebook.com/sharer/sharer.php?u={enc_url}'
+    x_url = f'https://twitter.com/intent/tweet?url={enc_url}&text={enc_text}'
+    return f'''<div class="share-bar">
+  <span class="share-label mono">Share this module</span>
+  <a class="share-btn share-fb" href="{fb_url}" target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook" title="Share on Facebook">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 8.5h2.5V5.2c-.43-.06-1.93-.2-3.67-.2-3.64 0-6.13 2.29-6.13 6.49v3.06H4v3.7h3.7V22h3.8v-3.75h3.55l.56-3.7h-4.1v-2.56c0-1.07.29-1.8 1.83-1.8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+  </a>
+  <a class="share-btn share-x" href="{x_url}" target="_blank" rel="noopener noreferrer" aria-label="Share on X" title="Share on X">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M18.3 3H21l-6.4 7.3L22 21h-6.6l-5.2-6.6L4 21H1.3l6.9-7.8L1 3h6.7l4.7 6.1L18.3 3Zm-1.1 16.2h1.5L7 4.7H5.4l11.8 14.5Z" fill="currentColor"/></svg>
+  </a>
+  <button class="share-btn share-ig" type="button" data-share-url="{esc(page_url)}" onclick="shareInstagram(this)" aria-label="Copy link for Instagram" title="Copy link for Instagram">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor"/></svg>
+  </button>
+  <span class="share-toast" role="status" aria-live="polite">Link copied &mdash; paste it into your Instagram Story or post.</span>
+</div>
+<script>
+function shareInstagram(btn) {{
+  var url = btn.getAttribute('data-share-url');
+  var toast = btn.parentElement.querySelector('.share-toast');
+  function showToast() {{
+    toast.classList.add('show');
+    setTimeout(function(){{ toast.classList.remove('show'); }}, 2800);
+  }}
+  if (navigator.clipboard && navigator.clipboard.writeText) {{
+    navigator.clipboard.writeText(url).then(showToast, showToast);
+  }} else {{
+    var ta = document.createElement('textarea');
+    ta.value = url; document.body.appendChild(ta); ta.select();
+    try {{ document.execCommand('copy'); }} catch(e) {{}}
+    document.body.removeChild(ta);
+    showToast();
+  }}
+}}
+</script>
 '''
 
 def footer(prefix=''):
@@ -163,8 +235,10 @@ def build_module_page(m):
     PREREQ_MAP = {1:"None",2:"Module 1",3:"Modules 1\u20132",4:"Modules 1\u20133",5:"Modules 1\u20134",6:"Modules 1\u20135",7:"Modules 1\u20136",8:"Modules 1\u20137",9:"Modules 1\u20138"}
 
     page = []
+    page_url = f'modules/module-{m}.html'
     page.append(head(f"Module {m}: {meta['title']} — Destiny Training Curriculum",
-                      meta['desc'], prefix='../'))
+                      meta['desc'], prefix='../',
+                      canonical_path=page_url, og_image=f'assets/img/og/module-{m}.png'))
     page.append(topbar(prefix='../'))
     page.append(f'<div class="wrap breadcrumb"><a href="../index.html">Home</a> / <a href="../index.html#modules">Modules</a> / Module {m}</div>')
     page.append(f'''<div class="wrap module-header">
@@ -176,6 +250,7 @@ def build_module_page(m):
     <div class="meta-item"><span class="meta-label mono">Est. Time</span><span class="meta-value">{esc(TIME_MAP[m])}</span></div>
     <div class="meta-item"><span class="meta-label mono">Format</span><span class="meta-value">Self-paced reading + knowledge check</span></div>
   </div>
+  ''' + share_bar_html(SITE_URL + page_url, f"Module {m}: {meta['title']} — Destiny Training Curriculum") + '''
 </div>''')
     page.append('<div class="wrap-narrow">')
     page.append(f'<div class="content-prose">{intro_html}</div>')
@@ -207,7 +282,7 @@ def build_index():
     page = []
     page.append(head("Follett Destiny LMS Training Curriculum — Free Resource for School Librarians",
                       "A free, independent 9-module Follett Destiny training curriculum for school librarians, updated for Destiny 24.0/23.5.",
-                      prefix=''))
+                      prefix='', canonical_path='index.html', og_image='assets/img/og/home.png'))
     page.append(topbar(prefix=''))
     page.append('''<header class="hero">
   <div class="wrap">
@@ -294,7 +369,7 @@ def build_glossary():
     page = []
     page.append(head("Glossary of Key Terms — Destiny Training Curriculum",
                       "Definitions of acronyms and terms used throughout the Follett Destiny training curriculum.",
-                      prefix=''))
+                      prefix='', canonical_path='glossary.html', og_image='assets/img/og/home.png'))
     page.append(topbar(prefix=''))
     page.append('<div class="wrap breadcrumb"><a href="index.html">Home</a> / Glossary</div>')
     page.append('''<div class="wrap-narrow" style="padding:24px 0 60px;">
