@@ -76,13 +76,13 @@ def topbar(prefix=''):
 # ---------------------------------------------------------------
 import urllib.parse
 
-def share_bar_html(page_url, title):
+def share_bar_html(page_url, title, label='Share this module'):
     enc_url = urllib.parse.quote(page_url, safe='')
     enc_text = urllib.parse.quote(title, safe='')
     fb_url = f'https://www.facebook.com/sharer/sharer.php?u={enc_url}'
     x_url = f'https://twitter.com/intent/tweet?url={enc_url}&text={enc_text}'
     return f'''<div class="share-bar">
-  <span class="share-label mono">Share this module</span>
+  <span class="share-label mono">{esc(label)}</span>
   <a class="share-btn share-fb" href="{fb_url}" target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook" title="Share on Facebook">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 8.5h2.5V5.2c-.43-.06-1.93-.2-3.67-.2-3.64 0-6.13 2.29-6.13 6.49v3.06H4v3.7h3.7V22h3.8v-3.75h3.55l.56-3.7h-4.1v-2.56c0-1.07.29-1.8 1.83-1.8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
   </a>
@@ -301,6 +301,7 @@ def build_index():
     </div>
   </div>
 </header>''')
+    page.append(f'<div class="wrap" style="padding-top:22px;">{share_bar_html(SITE_URL + "index.html", "Follett Destiny LMS Training Curriculum — Free Resource for School Librarians", label="Share this site")}</div>')
 
     page.append(f'''<section class="wrap" id="modules">
   <div class="section-head">
@@ -374,8 +375,9 @@ def build_glossary():
     page.append('<div class="wrap breadcrumb"><a href="index.html">Home</a> / Glossary</div>')
     page.append('''<div class="wrap-narrow" style="padding:24px 0 60px;">
   <h1>Glossary of Key Terms</h1>
-  <p style="color:var(--ink-soft);">Definitions of acronyms and terms used throughout Modules 1&ndash;9, in alphabetical order.</p>
-  <div class="glossary-list">''')
+  <p style="color:var(--ink-soft);">Definitions of acronyms and terms used throughout Modules 1&ndash;9, in alphabetical order.</p>''')
+    page.append(share_bar_html(SITE_URL + "glossary.html", "Glossary of Key Terms — Destiny Training Curriculum", label="Share this page"))
+    page.append('<div class="glossary-list">')
     page.append(''.join(items))
     page.append('</div></div>')
     page.append(footer(prefix=''))
