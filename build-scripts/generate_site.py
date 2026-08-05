@@ -1,6 +1,6 @@
 import pickle, sys, html as htmllib
 sys.path.insert(0, '.')
-from docx_to_html import convert_blocks
+from docx_to_html import convert_blocks, runs_to_html
 from site_data import MODULE_META, GLOSSARY
 from module_content import MODULES as MC
 
@@ -205,13 +205,50 @@ def video_html(videos):
 # ---------------------------------------------------------------
 # Module page
 # ---------------------------------------------------------------
+VIDEO_SECTION_BOUNDS = {
+    1: (79, 90), 2: (230, 233), 3: (361, 368), 4: (526, 533),
+    5: (673, 678), 6: (775, 784), 7: (881, 890), 8: (983, 986), 9: (None, None),
+}
+
+def video_tutorials_section_html(m, vid_h3_idx, next_h3_idx):
+    """Render each video's real description text paired with its embedded player,
+    in the same order they appear in the 'Verified YouTube Video Tutorials' subsection,
+    laid out 2-per-row when there is more than one."""
+    videos = MODULE_META[m]['videos']
+    cards = []
+    idx = 0
+    i = vid_h3_idx + 1
+    while i < next_h3_idx:
+        b = blocks[i]
+        if b['numpr'] and b['numpr'][0] == 0:
+            desc_html = runs_to_html(b['runs'])
+            vid_id, vid_title = videos[idx] if idx < len(videos) else (None, None)
+            if vid_id:
+                cards.append(f'''<div class="video-card">
+<p class="video-desc">{desc_html}</p>
+<div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/{vid_id}" title="{esc(vid_title)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+<div class="video-caption">{esc(vid_title)}</div>
+</div>''')
+            idx += 1
+        i += 1
+    grid_class = 'video-grid' if len(cards) > 1 else 'video-grid-single'
+    return f'<h3>Verified YouTube Video Tutorials</h3><div class="video-block"><div class="{grid_class}">{"".join(cards)}</div></div>'
+
 def build_module_page(m):
     meta = MODULE_META[m]
     mc = MC[m]
     intro_start, intro_end = ranges[m]['intro']
     core_start, core_end = ranges[m]['core']
     intro_html = convert_blocks(blocks, intro_start, intro_end)
-    core_html = convert_blocks(blocks, core_start, core_end)
+
+    vid_h3, next_h3 = VIDEO_SECTION_BOUNDS[m]
+    if vid_h3 is not None:
+        core_part1 = convert_blocks(blocks, core_start, vid_h3)  # up to (not including) the video Heading3
+        video_section = video_tutorials_section_html(m, vid_h3, next_h3)
+        core_part2 = convert_blocks(blocks, next_h3, core_end)
+        core_html = core_part1 + video_section + core_part2
+    else:
+        core_html = convert_blocks(blocks, core_start, core_end)
 
     prev_link = f'module-{m-1}.html' if m > 1 else None
     next_link = f'module-{m+1}.html' if m < 9 else None
@@ -255,7 +292,6 @@ def build_module_page(m):
     page.append('<div class="wrap-narrow">')
     page.append(f'<div class="content-prose">{intro_html}</div>')
     page.append(objectives_html(m))
-    page.append(video_html(meta['videos']))
     page.append(f'<div class="content-prose">{core_html}</div>')
     page.append(knowledge_check_html(m))
     page.append(works_cited_html(m))
