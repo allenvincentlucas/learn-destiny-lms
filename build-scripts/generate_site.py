@@ -234,6 +234,16 @@ def video_tutorials_section_html(m, vid_h3_idx, next_h3_idx):
     grid_class = 'video-grid' if len(cards) > 1 else 'video-grid-single'
     return f'<h3>Verified YouTube Video Tutorials</h3><div class="video-block"><div class="{grid_class}">{"".join(cards)}</div></div>'
 
+# For these modules, the "N. Curated Verified Resources and Video Tutorials" heading
+# is immediately followed by an unrelated "Module N Supplement" section in the source
+# document (with no content of its own under the Curated Resources heading first).
+# Reorder so the Supplement renders before the heading, matching the pattern used
+# by every other module (Supplement, then Curated Resources + videos).
+SUPPLEMENT_REORDER = {
+    2: (206, 207),  # (heading_4_idx, supplement_start_idx)
+    3: (337, 338),
+}
+
 def build_module_page(m):
     meta = MODULE_META[m]
     mc = MC[m]
@@ -242,7 +252,15 @@ def build_module_page(m):
     intro_html = convert_blocks(blocks, intro_start, intro_end)
 
     vid_h3, next_h3 = VIDEO_SECTION_BOUNDS[m]
-    if vid_h3 is not None:
+    if m in SUPPLEMENT_REORDER:
+        heading4_idx, supplement_start = SUPPLEMENT_REORDER[m]
+        part_a = convert_blocks(blocks, core_start, heading4_idx)
+        part_supplement = convert_blocks(blocks, supplement_start, vid_h3)
+        part_heading4 = convert_blocks(blocks, heading4_idx, heading4_idx + 1)
+        video_section = video_tutorials_section_html(m, vid_h3, next_h3)
+        core_part2 = convert_blocks(blocks, next_h3, core_end)
+        core_html = part_a + part_supplement + part_heading4 + video_section + core_part2
+    elif vid_h3 is not None:
         core_part1 = convert_blocks(blocks, core_start, vid_h3)  # up to (not including) the video Heading3
         video_section = video_tutorials_section_html(m, vid_h3, next_h3)
         core_part2 = convert_blocks(blocks, next_h3, core_end)
