@@ -5,7 +5,9 @@ def esc(s):
 
 def runs_to_html(runs):
     out = []
-    for text, bold, italic in runs:
+    for run in runs:
+        text, bold, italic = run[0], run[1], run[2]
+        href = run[3] if len(run) > 3 else None
         t = esc(text)
         if bold and italic:
             t = f'<strong><em>{t}</em></strong>'
@@ -13,6 +15,8 @@ def runs_to_html(runs):
             t = f'<strong>{t}</strong>'
         elif italic:
             t = f'<em>{t}</em>'
+        if href:
+            t = f'<a href="{htmllib.escape(href, quote=True)}" target="_blank" rel="noopener noreferrer">{t}</a>'
         out.append(t)
     return ''.join(out)
 
