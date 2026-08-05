@@ -4,8 +4,11 @@ MODULE_META = {
    "call": "025.1 — ORIENTATION",
    "desc": "Get fluent in the Destiny interface: the four core Back Office tabs, SSO login, mobile apps, and the accessibility features your students rely on.",
    "videos": [
-     ("H624JcmWrAw", "Basic Follett Destiny Log-In Tutorial — Mhai LeDoux"),
+     ("H624JcmWrAw", "Basic Follett Destiny Log In Tutorial — Mhai LeDoux"),
+     ("vi3s5g7GXxU", "Getting Started with Students Tutorial — Follett Software"),
      ("z2UisI91fQQ", "Follett Destiny New Staff Training — WSCS Professional Development"),
+     ("GlcpI4Ef5mY", "Follett Destiny Overview — Scott Martin-Rowe"),
+     ("8odGkjal_Y8", "Basic Check-in and Check-out — Cynthia M. Parkhill"),
    ],
  },
  2: {
@@ -23,6 +26,7 @@ MODULE_META = {
    "videos": [
      ("Fq2cikTq5pI", "How to Add a Patron in Follett Destiny — Tech Librarian Helpdesk"),
      ("xsLNUU-rSTg", "Create a Patron Account in Follett Destiny — BELS Consortium"),
+     ("EfoHqNl0yX0", "Import Patron Pictures into Destiny — Library Tech Videos"),
    ],
  },
  4: {
@@ -31,7 +35,8 @@ MODULE_META = {
    "desc": "From Alliance Plus searches to MARC 21 tags to CREW/MUSTIE weeding — the densest module in the curriculum.",
    "videos": [
      ("Hu8rsK7wMtM", "How to Add a Title and Copy in Follett Destiny — Tech Librarian Helpdesk"),
-     ("roNfmVoB3dQ", "Add a Title to Your Catalog — Joanne Koukoulas"),
+     ("uYGBFkQGWfk", "Follett Destiny: How To Do Inventory — Cynthia M. Parkhill"),
+     ("BA6OyMWoiPA", "Setting up a Follett Destiny Inventory Tutorial"),
    ],
  },
  5: {
@@ -48,7 +53,9 @@ MODULE_META = {
    "call": "025.6 — INVENTORY",
    "desc": "Run a section inventory without closing the library, and connect the results into your weeding workflow.",
    "videos": [
-     ("BA6OyMWoiPA", "Setting Up a Follett Destiny Inventory — Michael LeRoy"),
+     ("Hu8rsK7wMtM", "Inventory with Follett Destiny — School Library Talk with Megan"),
+     ("uYGBFkQGWfk", "Follett Destiny - How To Do Inventory — Mrs H Media"),
+     ("BA6OyMWoiPA", "Setting up a Follett Destiny Inventory — Michael LeRoy"),
      ("RZ0XwoaumM4", "How to Run Your Book Inventory — The Timer Pitt"),
    ],
  },
@@ -58,6 +65,8 @@ MODULE_META = {
    "desc": "Report Builder 2.0, EE/TOK citation exports for IB accreditation, and data-export paths for district dashboards.",
    "videos": [
      ("MtXizpIqgKU", "Destiny LM Report Builder — Follett Software"),
+     ("4jW2OXaiFuY", "Classroom Reports and Student Notices — Mrs H Media"),
+     ("0SqWoAvqWI0", "Uncirculated Books Report for Weeding — Mrs H Media"),
      ("qndLLiB1Dw8", "How to Run Overdues and Fines Report — Carrie Wuensch-Harden"),
    ],
  },
@@ -74,7 +83,6 @@ MODULE_META = {
    "call": "025.9 — PRO LEARNING",
    "desc": "Track release cycles, use Follett Academy for ongoing certification, and follow a real change-management sequence.",
    "videos": [
-     ("GlcpI4Ef5mY", "Follett Destiny Overview — Scott Martin-Rowe"),
    ],
  },
 }
